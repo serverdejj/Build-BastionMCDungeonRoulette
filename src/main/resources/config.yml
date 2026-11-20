@@ -1,47 +1,78 @@
-# BASTION MC - Dungeon Roulette V4 (Purpur 1.21.11)
-# 20 ticks = 1 segundo. /droulette reload aplica cambios sin reiniciar.
-# NO borres la sección blocks de tu configuración existente.
+# BastionMCDungeonRoulette V5 - hologramas por mapa.
+# duration-ticks: 0 = toda la pausa del ganador.
+# Los valores de offset de cada mapa se SUMAN a los generales.
 roulette:
-  duration-ticks: 130          # Duración del giro (~6.5 s)
-  scroll-steps: 28             # Tarjetas que recorren la ruleta durante el giro
-  winner-pause-ticks: 60      # 60 ticks = 3 segundos inmóvil el ganador
+  duration-ticks: 130
+  scroll-steps: 28
+  winner-pause-ticks: 60
   sound: BLOCK_NOTE_BLOCK_HAT
   volume: 0.45
   pitch: 1.4
-  display-height: 1.40        # Altura desde la BASE del bloque
-  image-scale: 0.72           # Tamaño de las imágenes (antes 1.8)
-  card-spacing: 1.18          # Distancia entre los centros de cada imagen
-  cards-left: 2               # Tarjetas a la izquierda de la seleccionada
-  cards-right: 4              # Tarjetas a la derecha de la seleccionada
-  slide-direction: right      # right o left
-  nearby-title-radius: 20     # Jugadores cercanos que ven el título final
+  display-height: 1.4
+  image-scale: 0.72
+  card-spacing: 1.18
+  cards-left: 2
+  cards-right: 4
+  slide-direction: right
+  nearby-title-radius: 20
   title-fade-in-ticks: 10
   title-stay-ticks: 65
   title-fade-out-ticks: 15
   title-format: '&#BA8AFFDungeon &f{map}'
   subtitle-format: '&7{description}'
-  # id es el identificador REAL del mapa; name y description solo se muestran.
   maps:
-    - id: dungeon1-endlessxl
-      name: 'dungeon1-endlessxl'
-      description: 'Una aventura en las profundidades'
-      weight: 1
-      model: bastionroulette:dungeon1_endlessxl
-    - id: the-labyrinth
-      name: 'the-labyrinth'
-      description: 'Encuentra el camino entre ruinas'
-      weight: 1
-      model: bastionroulette:the_labyrinth
-    - id: netherybreis
-      name: 'netherybreis'
-      description: 'Un reino de cenizas y lava'
-      weight: 1
-      model: bastionroulette:netherybreis
-
-# Registros guardados automáticamente por /droulette set.
-# Mantén los valores existentes en plugins/BastionMCDungeonRoulette/config.yml.
+  - id: dungeon1-endlessxl
+    name: dungeon1-endlessxl
+    description: Una aventura en las profundidades
+    weight: 1
+    model: bastionroulette:dungeon1_endlessxl
+    hologram:
+      enabled: true
+      height: 0.0
+      offset-x: 0.0
+      offset-y: 0.0
+      offset-z: 0.0
+      line-spacing: 0.27
+      scale: 1.0
+      lines:
+      - '&#C084FC&lMapa Ganador'
+      - '&f{name}'
+      - '&7Mata a el jefe para ganar'
+  - id: the-labyrinth
+    name: the-labyrinth
+    description: Encuentra el camino entre ruinas
+    weight: 1
+    model: bastionroulette:the_labyrinth
+    hologram:
+      enabled: true
+      height: 0.0
+      offset-x: 0.0
+      offset-y: 0.0
+      offset-z: 0.0
+      line-spacing: 0.27
+      scale: 1.0
+      lines:
+      - '&#C084FC&lMapa Ganador'
+      - '&f{name}'
+      - '&7Mata a el jefe para ganar'
+  - id: netherybreis
+    name: netherybreis
+    description: Un reino de cenizas y lava
+    weight: 1
+    model: bastionroulette:netherybreis
+    hologram:
+      enabled: true
+      height: 0.0
+      offset-x: 0.0
+      offset-y: 0.0
+      offset-z: 0.0
+      line-spacing: 0.27
+      scale: 1.0
+      lines:
+      - '&#C084FC&lMapa Ganador'
+      - '&f{name}'
+      - '&7Mata a el jefe para ganar'
 blocks: {}
-
 messages:
   admin-no-permission: '&cSolo OP.'
   admin-player-only: '&cSolo puedes usar este comando dentro del juego.'
@@ -59,3 +90,20 @@ messages:
   winner: '&#C084FCDungeon &f{map} &8- &7{description}'
   start-failed: '&cNo se pudo iniciar la partida: verifica equipo, horarios y mapa.'
   dungeons-unavailable: '&cNo se pudo conectar con Dungeons. ¿Instalaste el JAR integrado?'
+winner-hologram:
+  enabled: true
+  height: 0.9
+  offset-x: 0.0
+  offset-y: 0.0
+  offset-z: 0.0
+  line-spacing: 0.27
+  scale: 1.0
+  duration-ticks: 0
+  shadow: true
+  see-through: false
+  also-show-title: false
+  also-show-chat: false
+  default-lines:
+  - '&#C084FC&lMapa Ganador'
+  - '&f{name}'
+  - '&7Mata a el jefe para ganar'

@@ -120,11 +120,12 @@ public final class BastionMCDungeonRoulette extends JavaPlugin implements Listen
             try {weight=Math.max(0,Integer.parseInt(Objects.toString(row.containsKey("weight") ? row.get("weight") : 1)));} catch(Exception ignored){}
             String name=Objects.toString(row.containsKey("name") ? row.get("name") : id,id);
             String description=Objects.toString(row.containsKey("description") ? row.get("description") : "","");
-            if(!id.isBlank()&&!model.isBlank()&&weight>0) cards.add(new MapCard(id,model,weight,name,description));
+            Map<?,?> holo=row.get("hologram") instanceof Map<?,?> h ? h : Map.of();
+            if(!id.isBlank()&&!model.isBlank()&&weight>0) cards.add(new MapCard(id,model,weight,name,description,holo));
         }
         return cards;
     }
-    record MapCard(String id,String model,int weight,String name,String description) {}
+    record MapCard(String id,String model,int weight,String name,String description,Map<?,?> hologram) {}
     private MapCard choose(List<MapCard> cards) {
         int total=cards.stream().mapToInt(MapCard::weight).sum();
         int index=random.nextInt(total);
@@ -136,12 +137,14 @@ public final class BastionMCDungeonRoulette extends JavaPlugin implements Listen
         final Player player;
         final String level;
         final List<ItemDisplay> displays=new ArrayList<>();
+        final List<TextDisplay> hologramDisplays=new ArrayList<>();
         BukkitRunnable task;
         Spin(Block b,Player p,String l){block=b;player=p;level=l;}
 
         void stop() {
             if(task!=null){task.cancel();task=null;}
             for(ItemDisplay d:displays) if(d.isValid()) d.remove();
+            clearHologram();
             displays.clear();
             running.remove(key(block));
             pending.remove(player.getUniqueId());
@@ -183,8 +186,10 @@ public final class BastionMCDungeonRoulette extends JavaPlugin implements Listen
                 int tick=0;
                 int lastStep=Integer.MIN_VALUE;
                 boolean finished=false;
+                int hologramEndTick=Integer.MAX_VALUE;
                 @Override public void run() {
                     if(!player.isOnline() || !block.getWorld().isChunkLoaded(block.getX()>>4,block.getZ()>>4)) {stop();return;}
+                    if (tick >= hologramEndTick) {clearHologram();hologramEndTick=Integer.MAX_VALUE;}
                     if(tick < duration) {
                         double progress=(double)tick/duration;
                         double stepPosition=totalSteps*(1-Math.pow(1-progress,2.6));
@@ -220,6 +225,9 @@ public final class BastionMCDungeonRoulette extends JavaPlugin implements Listen
                         }
                         block.getWorld().spawnParticle(Particle.END_ROD,origin.clone().add(0,0.2,0),20,0.45,0.3,0.2,0.04);
                         block.getWorld().playSound(origin,Sound.UI_TOAST_CHALLENGE_COMPLETE,0.8f,1.1f);
+                        showHologram(winning,origin);
+                        int hologramDuration=getInt("winner-hologram.duration-ticks",0,0,1200);
+                        hologramEndTick=tick+Math.min(hold,hologramDuration==0?hold:hologramDuration);
                     } else if(tick>=duration+hold) {
                         stop();
                         announceWinner(winning,origin);
@@ -230,6 +238,63 @@ public final class BastionMCDungeonRoulette extends JavaPlugin implements Listen
                 }
             };
             task.runTaskTimer(BastionMCDungeonRoulette.this,0L,1L);
+        }
+        private void clearHologram() {
+            for(TextDisplay display:hologramDisplays) if(display.isValid()) display.remove();
+            hologramDisplays.clear();
+        }
+        private double mapNumber(Map<?,?> settings,String option,double fallback) {
+            Object value=settings.get(option);
+            if(value instanceof Number n) return n.doubleValue();
+            if(value!=null) try{return Double.parseDouble(value.toString());}catch(NumberFormatException ignored){}
+            return fallback;
+        }
+        private boolean mapBoolean(Map<?,?> settings,String option,boolean fallback) {
+            Object value=settings.get(option);
+            return value==null?fallback:Boolean.parseBoolean(value.toString());
+        }
+        private String applyPlaceholders(String value,MapCard card) {
+            return color(value.replace("{map}",card.name()).replace("{name}",card.name())
+                .replace("{id}",card.id()).replace("{description}",card.description()));
+        }
+        private void showHologram(MapCard card,Location origin) {
+            clearHologram();
+            if(!getConfig().getBoolean("winner-hologram.enabled",true)) return;
+            Map<?,?> options=card.hologram();
+            if(!mapBoolean(options,"enabled",true)) return;
+            // Map-specific displacement is additive to the common position.
+            double x=getConfig().getDouble("winner-hologram.offset-x",0.0)+mapNumber(options,"offset-x",0);
+            double y=getConfig().getDouble("winner-hologram.offset-y",0.0)+mapNumber(options,"offset-y",0);
+            double z=getConfig().getDouble("winner-hologram.offset-z",0.0)+mapNumber(options,"offset-z",0);
+            double height=getConfig().getDouble("winner-hologram.height",0.9)+mapNumber(options,"height",0);
+            double lineSpacing=Math.max(0.10,mapNumber(options,"line-spacing",getConfig().getDouble("winner-hologram.line-spacing",0.27)));
+            List<String> lines=new ArrayList<>();
+            Object rawLines=options.get("lines");
+            if(rawLines instanceof List<?> custom) {
+                for(Object line:custom) if(line!=null) lines.add(line.toString());
+            } else {
+                lines.addAll(getConfig().getStringList("winner-hologram.default-lines"));
+            }
+            if(lines.isEmpty()) lines=List.of("&d&lMapa Ganador","&f{name}","&7Mata a el jefe para ganar");
+            boolean shadow=mapBoolean(options,"shadow",getConfig().getBoolean("winner-hologram.shadow",true));
+            boolean seeThrough=mapBoolean(options,"see-through",getConfig().getBoolean("winner-hologram.see-through",false));
+            float scale=(float)Math.max(0.1,mapNumber(options,"scale",getConfig().getDouble("winner-hologram.scale",1.0)));
+            Location base=origin.clone().add(x,height+y,z);
+            for(int i=0;i<lines.size();i++) {
+                String line=applyPlaceholders(lines.get(i),card);
+                if(line.isBlank()) continue;
+                Location location=base.clone().add(0,(lines.size()-1-i)*lineSpacing,0);
+                TextDisplay display=block.getWorld().spawn(location,TextDisplay.class, entity->{
+                    entity.setPersistent(false);
+                    entity.setBillboard(Display.Billboard.CENTER);
+                    entity.setDefaultBackground(false);
+                    entity.setShadowed(shadow);
+                    entity.setSeeThrough(seeThrough);
+                    entity.setText(line);
+                    entity.setTransformation(new Transformation(new Vector3f(),new Quaternionf(),new Vector3f(scale,scale,scale),new Quaternionf()));
+                });
+                hologramDisplays.add(display);
+            }
         }
         private void announceWinner(MapCard winner,Location origin) {
             String title=color(getConfig().getString("roulette.title-format","&dDungeon &f{map}"))
@@ -242,10 +307,13 @@ public final class BastionMCDungeonRoulette extends JavaPlugin implements Listen
             int fadeIn=getInt("roulette.title-fade-in-ticks",10,0,200);
             int stay=getInt("roulette.title-stay-ticks",65,1,1200);
             int fadeOut=getInt("roulette.title-fade-out-ticks",15,0,200);
+            boolean showTitle=getConfig().getBoolean("winner-hologram.also-show-title",false);
+            boolean showChat=getConfig().getBoolean("winner-hologram.also-show-chat",false);
+            if (!showTitle && !showChat) return;
             for(Player nearby:block.getWorld().getPlayers()) {
                 if(nearby.getLocation().distanceSquared(origin)>radius*radius) continue;
-                nearby.sendTitle(title,subtitle,fadeIn,stay,fadeOut);
-                nearby.sendMessage(chat);
+                if (showTitle) nearby.sendTitle(title,subtitle,fadeIn,stay,fadeOut);
+                if (showChat) nearby.sendMessage(chat);
             }
         }
         private void launchDungeon(MapCard winner) {
