@@ -1,31 +1,61 @@
-# El mapa elegido se mantiene aleatorio entre los tres para las tres dificultades.
-# Los bloques se registran mirando al bloque y ejecutando /droulette set facil|normal|dificil.
-# Usar las capturas dentro del resource pack proporcionado.
+# BASTION MC - Dungeon Roulette V4 (Purpur 1.21.11)
+# 20 ticks = 1 segundo. /droulette reload aplica cambios sin reiniciar.
+# NO borres la sección blocks de tu configuración existente.
 roulette:
-  duration-ticks: 130
+  duration-ticks: 130          # Duración del giro (~6.5 s)
+  scroll-steps: 28             # Tarjetas que recorren la ruleta durante el giro
+  winner-pause-ticks: 60      # 60 ticks = 3 segundos inmóvil el ganador
   sound: BLOCK_NOTE_BLOCK_HAT
   volume: 0.45
   pitch: 1.4
-  display-height: 2.7
-  image-scale: 1.8
+  display-height: 1.40        # Altura desde la BASE del bloque
+  image-scale: 0.72           # Tamaño de las imágenes (antes 1.8)
+  card-spacing: 1.18          # Distancia entre los centros de cada imagen
+  cards-left: 2               # Tarjetas a la izquierda de la seleccionada
+  cards-right: 4              # Tarjetas a la derecha de la seleccionada
+  slide-direction: right      # right o left
+  nearby-title-radius: 20     # Jugadores cercanos que ven el título final
+  title-fade-in-ticks: 10
+  title-stay-ticks: 65
+  title-fade-out-ticks: 15
+  title-format: '&#BA8AFFDungeon &f{map}'
+  subtitle-format: '&7{description}'
+  # id es el identificador REAL del mapa; name y description solo se muestran.
   maps:
     - id: dungeon1-endlessxl
+      name: 'dungeon1-endlessxl'
+      description: 'Una aventura en las profundidades'
       weight: 1
       model: bastionroulette:dungeon1_endlessxl
     - id: the-labyrinth
+      name: 'the-labyrinth'
+      description: 'Encuentra el camino entre ruinas'
       weight: 1
       model: bastionroulette:the_labyrinth
     - id: netherybreis
+      name: 'netherybreis'
+      description: 'Un reino de cenizas y lava'
       weight: 1
       model: bastionroulette:netherybreis
-# Éstas se completan automáticamente mediante /droulette set.
+
+# Registros guardados automáticamente por /droulette set.
+# Mantén los valores existentes en plugins/BastionMCDungeonRoulette/config.yml.
 blocks: {}
+
 messages:
-  admin-remove: "&#A5FFB6Ruleta {difficulty} eliminada de este bloque."
-  admin-remove-no-target: "&cMira al bloque de ruleta que quieres quitar."
-  admin-remove-not-found: "&cEse bloque no tiene una ruleta configurada."
-  admin-remove-busy: "&cEspera a que termine la ruleta antes de eliminarla."
+  admin-no-permission: '&cSolo OP.'
+  admin-player-only: '&cSolo puedes usar este comando dentro del juego.'
+  admin-no-target: '&cMira a un bloque cercano.'
+  admin-usage: '&e/droulette set facil|normal|dificil, /droulette remove, /droulette reload'
   admin-set: '&#A5FFB6Ruleta {difficulty} configurada en este bloque.'
+  admin-remove: '&#A5FFB6Ruleta {difficulty} eliminada de este bloque.'
+  admin-remove-no-target: '&cMira al bloque de ruleta que quieres quitar.'
+  admin-remove-not-found: '&cEse bloque no tiene una ruleta configurada.'
+  admin-remove-busy: '&cEspera a que termine la ruleta antes de eliminarla.'
+  admin-reload: '&#A5FFB6Configuración de ruletas recargada.'
   busy: '&cYa hay una ruleta en curso.'
   denied: '&cSolo el líder del equipo puede usar esta ruleta.'
-  winner: '&#C084FCMapa seleccionado: &f{map}'
+  no-maps: '&cNo hay mapas configurados.'
+  winner: '&#C084FCDungeon &f{map} &8- &7{description}'
+  start-failed: '&cNo se pudo iniciar la partida: verifica equipo, horarios y mapa.'
+  dungeons-unavailable: '&cNo se pudo conectar con Dungeons. ¿Instalaste el JAR integrado?'
