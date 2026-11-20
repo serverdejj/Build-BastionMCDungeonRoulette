@@ -1,6 +1,10 @@
-# BastionMCDungeonRoulette V5 - hologramas por mapa.
-# duration-ticks: 0 = toda la pausa del ganador.
-# Los valores de offset de cada mapa se SUMAN a los generales.
+# BASTION MC Dungeon Roulette V6 - hologramas con escala y altura por LINEA y por MAPA.
+# Colores: &a, &l, &#RRGGBB, degradados caracter por caracter: &#2529A7&le&#2822A6&lj...
+# Cada linea tiene text, height, scale, offset-x, offset-y, offset-z.
+# height es el desplazamiento VERTICAL de ESA linea respecto a la base del holograma.
+# La base es: posicion ruleta + winner-hologram.height + hologram.height del mapa.
+# Se mantienen guardados los 3 bloques originales en 'blocks'.
+# Los cambios en config.yml se aplican con /droulette reload.
 roulette:
   duration-ticks: 130
   scroll-steps: 28
@@ -32,12 +36,27 @@ roulette:
       offset-x: 0.0
       offset-y: 0.0
       offset-z: 0.0
-      line-spacing: 0.27
-      scale: 1.0
+      line-spacing: 0.35
+      scale: 0.75
       lines:
-      - '&#C084FC&lMapa Ganador'
-      - '&f{name}'
-      - '&7Mata a el jefe para ganar'
+      - text: '&#2529A7&lM&#2822A6&la&#2C1CA6&lp&#2F15A5&la &#3420AF&lG&#3A2CBA&la&#3F37C4&ln&#4542CD&la&#4B4DD6&ld&#5158DF&lo&#5763E8&lr'
+        height: 0.92
+        scale: 0.72
+        offset-x: 0.0
+        offset-y: 0.0
+        offset-z: 0.0
+      - text: '&f&l{name}'
+        height: 0.44
+        scale: 0.6
+        offset-x: 0.0
+        offset-y: 0.0
+        offset-z: 0.0
+      - text: '&7Mata a el jefe para ganar'
+        height: 0.03
+        scale: 0.38
+        offset-x: 0.0
+        offset-y: 0.0
+        offset-z: 0.0
   - id: the-labyrinth
     name: the-labyrinth
     description: Encuentra el camino entre ruinas
@@ -49,12 +68,27 @@ roulette:
       offset-x: 0.0
       offset-y: 0.0
       offset-z: 0.0
-      line-spacing: 0.27
-      scale: 1.0
+      line-spacing: 0.35
+      scale: 0.75
       lines:
-      - '&#C084FC&lMapa Ganador'
-      - '&f{name}'
-      - '&7Mata a el jefe para ganar'
+      - text: '&#2529A7&lM&#2822A6&la&#2C1CA6&lp&#2F15A5&la &#3420AF&lG&#3A2CBA&la&#3F37C4&ln&#4542CD&la&#4B4DD6&ld&#5158DF&lo&#5763E8&lr'
+        height: 0.92
+        scale: 0.72
+        offset-x: 0.0
+        offset-y: 0.0
+        offset-z: 0.0
+      - text: '&f&l{name}'
+        height: 0.44
+        scale: 0.6
+        offset-x: 0.0
+        offset-y: 0.0
+        offset-z: 0.0
+      - text: '&7Mata a el jefe para ganar'
+        height: 0.03
+        scale: 0.38
+        offset-x: 0.0
+        offset-y: 0.0
+        offset-z: 0.0
   - id: netherybreis
     name: netherybreis
     description: Un reino de cenizas y lava
@@ -66,13 +100,49 @@ roulette:
       offset-x: 0.0
       offset-y: 0.0
       offset-z: 0.0
-      line-spacing: 0.27
-      scale: 1.0
+      line-spacing: 0.35
+      scale: 0.75
       lines:
-      - '&#C084FC&lMapa Ganador'
-      - '&f{name}'
-      - '&7Mata a el jefe para ganar'
-blocks: {}
+      - text: '&#2529A7&lM&#2822A6&la&#2C1CA6&lp&#2F15A5&la &#3420AF&lG&#3A2CBA&la&#3F37C4&ln&#4542CD&la&#4B4DD6&ld&#5158DF&lo&#5763E8&lr'
+        height: 0.92
+        scale: 0.72
+        offset-x: 0.0
+        offset-y: 0.0
+        offset-z: 0.0
+      - text: '&f&l{name}'
+        height: 0.44
+        scale: 0.6
+        offset-x: 0.0
+        offset-y: 0.0
+        offset-z: 0.0
+      - text: '&7Mata a el jefe para ganar'
+        height: 0.03
+        scale: 0.38
+        offset-x: 0.0
+        offset-y: 0.0
+        offset-z: 0.0
+blocks:
+  facil:
+    location: 98d0903d-0041-4c02-8b60-2f78ceda0337:-180:174:70
+    world: Spawn
+    xyz:
+    - -180
+    - 174
+    - 70
+  normal:
+    location: 98d0903d-0041-4c02-8b60-2f78ceda0337:-182:174:70
+    world: Spawn
+    xyz:
+    - -182
+    - 174
+    - 70
+  dificil:
+    location: 98d0903d-0041-4c02-8b60-2f78ceda0337:-184:174:70
+    world: Spawn
+    xyz:
+    - -184
+    - 174
+    - 70
 messages:
   admin-no-permission: '&cSolo OP.'
   admin-player-only: '&cSolo puedes usar este comando dentro del juego.'

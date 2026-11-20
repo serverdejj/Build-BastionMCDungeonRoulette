@@ -268,30 +268,45 @@ public final class BastionMCDungeonRoulette extends JavaPlugin implements Listen
             double z=getConfig().getDouble("winner-hologram.offset-z",0.0)+mapNumber(options,"offset-z",0);
             double height=getConfig().getDouble("winner-hologram.height",0.9)+mapNumber(options,"height",0);
             double lineSpacing=Math.max(0.10,mapNumber(options,"line-spacing",getConfig().getDouble("winner-hologram.line-spacing",0.27)));
-            List<String> lines=new ArrayList<>();
+            // Each hologram line may be a plain string (legacy V5) or a YAML map
+            // with independent text, scale, height and offsets (V6).
+            List<?> lines;
             Object rawLines=options.get("lines");
             if(rawLines instanceof List<?> custom) {
-                for(Object line:custom) if(line!=null) lines.add(line.toString());
+                lines=custom;
             } else {
-                lines.addAll(getConfig().getStringList("winner-hologram.default-lines"));
+                lines=getConfig().getList("winner-hologram.default-lines",List.of());
             }
             if(lines.isEmpty()) lines=List.of("&d&lMapa Ganador","&f{name}","&7Mata a el jefe para ganar");
             boolean shadow=mapBoolean(options,"shadow",getConfig().getBoolean("winner-hologram.shadow",true));
             boolean seeThrough=mapBoolean(options,"see-through",getConfig().getBoolean("winner-hologram.see-through",false));
-            float scale=(float)Math.max(0.1,mapNumber(options,"scale",getConfig().getDouble("winner-hologram.scale",1.0)));
+            double defaultScale=Math.max(0.05,mapNumber(options,"scale",getConfig().getDouble("winner-hologram.scale",1.0)));
             Location base=origin.clone().add(x,height+y,z);
             for(int i=0;i<lines.size();i++) {
-                String line=applyPlaceholders(lines.get(i),card);
-                if(line.isBlank()) continue;
-                Location location=base.clone().add(0,(lines.size()-1-i)*lineSpacing,0);
+                Object source=lines.get(i);
+                if(source==null) continue;
+                Map<?,?> lineOptions=source instanceof Map<?,?> settings ? settings : Map.of();
+                String rawText=source instanceof Map<?,?> ? Objects.toString(lineOptions.get("text"),"") : source.toString();
+                if(rawText.isBlank() || !mapBoolean(lineOptions,"enabled",true)) continue;
+                String line=applyPlaceholders(rawText,card);
+                // height is relative to the common + map hologram origin.
+                // For legacy strings, retain the original automatic spacing.
+                double lineHeight=mapNumber(lineOptions,"height",(lines.size()-1-i)*lineSpacing);
+                double lineX=mapNumber(lineOptions,"offset-x",0);
+                double lineY=mapNumber(lineOptions,"offset-y",0);
+                double lineZ=mapNumber(lineOptions,"offset-z",0);
+                float lineScale=(float)Math.max(0.05,Math.min(8.0,mapNumber(lineOptions,"scale",defaultScale)));
+                boolean lineShadow=mapBoolean(lineOptions,"shadow",shadow);
+                boolean lineSeeThrough=mapBoolean(lineOptions,"see-through",seeThrough);
+                Location location=base.clone().add(lineX,lineHeight+lineY,lineZ);
                 TextDisplay display=block.getWorld().spawn(location,TextDisplay.class, entity->{
                     entity.setPersistent(false);
                     entity.setBillboard(Display.Billboard.CENTER);
                     entity.setDefaultBackground(false);
-                    entity.setShadowed(shadow);
-                    entity.setSeeThrough(seeThrough);
+                    entity.setShadowed(lineShadow);
+                    entity.setSeeThrough(lineSeeThrough);
                     entity.setText(line);
-                    entity.setTransformation(new Transformation(new Vector3f(),new Quaternionf(),new Vector3f(scale,scale,scale),new Quaternionf()));
+                    entity.setTransformation(new Transformation(new Vector3f(),new Quaternionf(),new Vector3f(lineScale,lineScale,lineScale),new Quaternionf()));
                 });
                 hologramDisplays.add(display);
             }
