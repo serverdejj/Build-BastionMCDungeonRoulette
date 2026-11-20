@@ -1,6 +1,7 @@
 # BASTION MC Dungeon Roulette V6 - hologramas con escala y altura por LINEA y por MAPA.
 # Colores: &a, &l, &#RRGGBB, degradados caracter por caracter: &#2529A7&le&#2822A6&lj...
-# Cada linea tiene text, height, scale, offset-x, offset-y, offset-z.
+# Cada linea tiene text, height, scale, offset-x, offset-y, offset-z y background-opacity.
+# background-opacity: 0 = transparente (por defecto), 255 = fondo negro opaco.
 # height es el desplazamiento VERTICAL de ESA linea respecto a la base del holograma.
 # La base es: posicion ruleta + winner-hologram.height + hologram.height del mapa.
 # Se mantienen guardados los 3 bloques originales en 'blocks'.
@@ -38,22 +39,26 @@ roulette:
       offset-z: 0.0
       line-spacing: 0.35
       scale: 0.75
+      background-opacity: 0
       lines:
       - text: '&#2529A7&lM&#2822A6&la&#2C1CA6&lp&#2F15A5&la &#3420AF&lG&#3A2CBA&la&#3F37C4&ln&#4542CD&la&#4B4DD6&ld&#5158DF&lo&#5763E8&lr'
         height: 0.92
         scale: 0.72
+        background-opacity: 0
         offset-x: 0.0
         offset-y: 0.0
         offset-z: 0.0
       - text: '&f&l{name}'
         height: 0.44
         scale: 0.6
+        background-opacity: 0
         offset-x: 0.0
         offset-y: 0.0
         offset-z: 0.0
       - text: '&7Mata a el jefe para ganar'
         height: 0.03
         scale: 0.38
+        background-opacity: 0
         offset-x: 0.0
         offset-y: 0.0
         offset-z: 0.0
@@ -70,22 +75,26 @@ roulette:
       offset-z: 0.0
       line-spacing: 0.35
       scale: 0.75
+      background-opacity: 0
       lines:
       - text: '&#2529A7&lM&#2822A6&la&#2C1CA6&lp&#2F15A5&la &#3420AF&lG&#3A2CBA&la&#3F37C4&ln&#4542CD&la&#4B4DD6&ld&#5158DF&lo&#5763E8&lr'
         height: 0.92
         scale: 0.72
+        background-opacity: 0
         offset-x: 0.0
         offset-y: 0.0
         offset-z: 0.0
       - text: '&f&l{name}'
         height: 0.44
         scale: 0.6
+        background-opacity: 0
         offset-x: 0.0
         offset-y: 0.0
         offset-z: 0.0
       - text: '&7Mata a el jefe para ganar'
         height: 0.03
         scale: 0.38
+        background-opacity: 0
         offset-x: 0.0
         offset-y: 0.0
         offset-z: 0.0
@@ -102,22 +111,26 @@ roulette:
       offset-z: 0.0
       line-spacing: 0.35
       scale: 0.75
+      background-opacity: 0
       lines:
       - text: '&#2529A7&lM&#2822A6&la&#2C1CA6&lp&#2F15A5&la &#3420AF&lG&#3A2CBA&la&#3F37C4&ln&#4542CD&la&#4B4DD6&ld&#5158DF&lo&#5763E8&lr'
         height: 0.92
         scale: 0.72
+        background-opacity: 0
         offset-x: 0.0
         offset-y: 0.0
         offset-z: 0.0
       - text: '&f&l{name}'
         height: 0.44
         scale: 0.6
+        background-opacity: 0
         offset-x: 0.0
         offset-y: 0.0
         offset-z: 0.0
       - text: '&7Mata a el jefe para ganar'
         height: 0.03
         scale: 0.38
+        background-opacity: 0
         offset-x: 0.0
         offset-y: 0.0
         offset-z: 0.0
@@ -171,6 +184,7 @@ winner-hologram:
   duration-ticks: 0
   shadow: true
   see-through: false
+  background-opacity: 0
   also-show-title: false
   also-show-chat: false
   default-lines:

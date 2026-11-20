@@ -280,6 +280,10 @@ public final class BastionMCDungeonRoulette extends JavaPlugin implements Listen
             if(lines.isEmpty()) lines=List.of("&d&lMapa Ganador","&f{name}","&7Mata a el jefe para ganar");
             boolean shadow=mapBoolean(options,"shadow",getConfig().getBoolean("winner-hologram.shadow",true));
             boolean seeThrough=mapBoolean(options,"see-through",getConfig().getBoolean("winner-hologram.see-through",false));
+            // 0 = completely transparent (default), 255 = fully opaque black.
+            // A map may override the global value, and each line may override its map.
+            int defaultBackgroundOpacity=(int)Math.max(0,Math.min(255,
+                mapNumber(options,"background-opacity",getConfig().getInt("winner-hologram.background-opacity",0))));
             double defaultScale=Math.max(0.05,mapNumber(options,"scale",getConfig().getDouble("winner-hologram.scale",1.0)));
             Location base=origin.clone().add(x,height+y,z);
             for(int i=0;i<lines.size();i++) {
@@ -298,11 +302,14 @@ public final class BastionMCDungeonRoulette extends JavaPlugin implements Listen
                 float lineScale=(float)Math.max(0.05,Math.min(8.0,mapNumber(lineOptions,"scale",defaultScale)));
                 boolean lineShadow=mapBoolean(lineOptions,"shadow",shadow);
                 boolean lineSeeThrough=mapBoolean(lineOptions,"see-through",seeThrough);
+                int lineBackgroundOpacity=(int)Math.max(0,Math.min(255,
+                    mapNumber(lineOptions,"background-opacity",defaultBackgroundOpacity)));
                 Location location=base.clone().add(lineX,lineHeight+lineY,lineZ);
                 TextDisplay display=block.getWorld().spawn(location,TextDisplay.class, entity->{
                     entity.setPersistent(false);
                     entity.setBillboard(Display.Billboard.CENTER);
                     entity.setDefaultBackground(false);
+                    entity.setBackgroundColor(Color.fromARGB(lineBackgroundOpacity,0,0,0));
                     entity.setShadowed(lineShadow);
                     entity.setSeeThrough(lineSeeThrough);
                     entity.setText(line);
