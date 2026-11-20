@@ -6,7 +6,7 @@ depend: [BastionDungeons]
 commands:
   droulette:
     description: Configurar las 3 ruletas de mapas
-    usage: /droulette set <facil|normal|dificil> | reload
+    usage: /droulette set <facil|normal|dificil> | remove | reload
 permissions:
   bastionroulette.admin:
     default: op

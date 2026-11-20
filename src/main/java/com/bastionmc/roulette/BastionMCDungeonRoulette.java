@@ -63,12 +63,29 @@ public final class BastionMCDungeonRoulette extends JavaPlugin implements Listen
             p.sendMessage(message("admin-set", "&aRuleta {difficulty} configurada.").replace("{difficulty}",level));
             return true;
         }
-        sender.sendMessage(ChatColor.YELLOW+"/droulette set facil|normal|dificil, /droulette reload");
+        if (args.length==1 && args[0].equalsIgnoreCase("remove")) {
+            Block block = p.getTargetBlockExact(7);
+            if (block==null || block.getType().isAir()) {p.sendMessage(message("admin-remove-no-target", "&cMira al bloque de ruleta que quieres quitar."));return true;}
+            String blockKey=key(block);
+            if (running.containsKey(blockKey)) {p.sendMessage(message("admin-remove-busy", "&cEspera a que termine la ruleta antes de eliminarla."));return true;}
+            String removed=null;
+            for (String l: LEVELS) {
+                if (Objects.equals(getConfig().getString("blocks."+l+".location"),blockKey)) {
+                    getConfig().set("blocks."+l,null);
+                    removed=l;
+                }
+            }
+            if (removed==null) {p.sendMessage(message("admin-remove-not-found", "&cEse bloque no tiene una ruleta configurada."));return true;}
+            saveConfig();
+            p.sendMessage(message("admin-remove", "&aRuleta &f{difficulty} &aeliminada de este bloque.").replace("{difficulty}",removed));
+            return true;
+        }
+        sender.sendMessage(ChatColor.YELLOW+"/droulette set facil|normal|dificil, /droulette remove, /droulette reload");
         return true;
     }
     @Override public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
         if(!sender.hasPermission("bastionroulette.admin")) return List.of();
-        List<String> values=args.length==1?List.of("set","reload"):args.length==2&&args[0].equalsIgnoreCase("set")?LEVELS:List.of();
+        List<String> values=args.length==1?List.of("set","remove","reload"):args.length==2&&args[0].equalsIgnoreCase("set")?LEVELS:List.of();
         return values.stream().filter(s->s.startsWith(args[args.length-1].toLowerCase(Locale.ROOT))).toList();
     }
     @EventHandler(priority=EventPriority.HIGH,ignoreCancelled=true)

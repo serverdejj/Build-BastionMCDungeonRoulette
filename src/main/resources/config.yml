@@ -21,6 +21,10 @@ roulette:
 # Éstas se completan automáticamente mediante /droulette set.
 blocks: {}
 messages:
+  admin-remove: "&#A5FFB6Ruleta {difficulty} eliminada de este bloque."
+  admin-remove-no-target: "&cMira al bloque de ruleta que quieres quitar."
+  admin-remove-not-found: "&cEse bloque no tiene una ruleta configurada."
+  admin-remove-busy: "&cEspera a que termine la ruleta antes de eliminarla."
   admin-set: '&#A5FFB6Ruleta {difficulty} configurada en este bloque.'
   busy: '&cYa hay una ruleta en curso.'
   denied: '&cSolo el líder del equipo puede usar esta ruleta.'
