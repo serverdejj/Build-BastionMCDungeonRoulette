@@ -1,0 +1,12 @@
+name: BastionMCDungeonRoulette
+main: com.bastionmc.roulette.BastionMCDungeonRoulette
+version: 1.0.0
+api-version: '1.21.11'
+depend: [BastionDungeons]
+commands:
+  droulette:
+    description: Configurar las 3 ruletas de mapas
+    usage: /droulette set <facil|normal|dificil> | reload
+permissions:
+  bastionroulette.admin:
+    default: op

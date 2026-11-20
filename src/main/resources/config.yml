@@ -1,0 +1,27 @@
+# El mapa elegido se mantiene aleatorio entre los tres para las tres dificultades.
+# Los bloques se registran mirando al bloque y ejecutando /droulette set facil|normal|dificil.
+# Usar las capturas dentro del resource pack proporcionado.
+roulette:
+  duration-ticks: 130
+  sound: BLOCK_NOTE_BLOCK_HAT
+  volume: 0.45
+  pitch: 1.4
+  display-height: 2.7
+  image-scale: 1.8
+  maps:
+    - id: dungeon1-endlessxl
+      weight: 1
+      model: bastionroulette:dungeon1_endlessxl
+    - id: the-labyrinth
+      weight: 1
+      model: bastionroulette:the_labyrinth
+    - id: netherybreis
+      weight: 1
+      model: bastionroulette:netherybreis
+# Éstas se completan automáticamente mediante /droulette set.
+blocks: {}
+messages:
+  admin-set: '&#A5FFB6Ruleta {difficulty} configurada en este bloque.'
+  busy: '&cYa hay una ruleta en curso.'
+  denied: '&cSolo el líder del equipo puede usar esta ruleta.'
+  winner: '&#C084FCMapa seleccionado: &f{map}'
